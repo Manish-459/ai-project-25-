@@ -3,7 +3,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 // const colors = require("colors");
-const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const errorHandler = require("./middelwares/errorMiddleware");
 const path=require("path");
@@ -12,7 +11,7 @@ const path=require("path");
 const authRoutes = require("./routes/authRoutes");
 
 //dotenv
-dotenv.config();
+require("dotenv").config();
 
 //mongo connection
 connectDB();
@@ -39,7 +38,7 @@ app.use("/api/v1/openai", require("./routes/openaiRoutes"));
     })
 //listen server
 app.listen(PORT, () => {
-  // console.log(
-  //   `Server Running in ${process.env.DEV_MODE} mode on port no ${PORT}`
-  // );
+  console.log(
+    `Server Running on port no ${PORT}`
+  );
 });

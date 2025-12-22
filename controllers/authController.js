@@ -16,12 +16,16 @@ exports.registerContoller = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
     //exisitng user
-    const exisitingEmail = await userModel.findOne({ email });
+    // console.log("checkpoint 1")
+    const exisitingEmail = await userModel.findOne({ email:email });
+    // console.log("checkpoint 2")
     if (exisitingEmail) {
       return next(new errorResponse("Email is already register", 500));
     }
+    // console.log("checkpoint 3")
     const user = await userModel.create({ username, email, password });
     this.sendToken(user, 201, res);
+    return res.json("User Logged in")
   } catch (error) {
     next(error);
   }

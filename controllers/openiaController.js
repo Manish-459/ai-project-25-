@@ -1,3 +1,5 @@
+const { GoogleGenAI } = require("@google/genai");
+const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
 const dotenv = require("dotenv");
 dotenv.config();
 const { Configuration, OpenAIApi } = require("openai");
@@ -5,23 +7,27 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
+;
 
 exports.summaryController = async (req, res) => {
   try {
     const { text } = req.body;
-    const { data } = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `Summarize this \n${text}`,
-      max_tokens: 500,
-      temperature: 0.5,
+    // console.log('1',text)
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `Summarize this:\n${text}`,
     });
-    if (data) {
-      if (data.choices[0].text) {
-        return res.status(200).json(data.choices[0].text);
-      }
+    
+    
+    // console.log("2", result.candidates[0].content.parts[0].text);
+    
+    const summary = result.candidates[0].content.parts[0].text;
+    if (summary) {
+      return res.status(200).json(summary);
+      // console.log("3");
     }
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     return res.status(404).json({
       message: err.message,
     });
@@ -30,16 +36,15 @@ exports.summaryController = async (req, res) => {
 exports.paragraphController = async (req, res) => {
   try {
     const { text } = req.body;
-    const { data } = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `write a detail paragraph about \n${text}`,
-      max_tokens: 500,
-      temperature: 0.5,
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `create randome para about:\n${text}`,
     });
-    if (data) {
-      if (data.choices[0].text) {
-        return res.status(200).json(data.choices[0].text);
-      }
+  
+    const para = result.candidates[0].content.parts[0].text;
+    if (para) {
+      return res.status(200).json(para);
+      // console.log("3");
     }
   } catch (err) {
     // console.log(err);
@@ -51,18 +56,16 @@ exports.paragraphController = async (req, res) => {
 exports.chatbotController = async (req, res) => {
   try {
     const { text } = req.body;
-    const { data } = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `Answer question similar to how chatgpt  would.
-      Me: 'ai'
-      Me: ${text}`,
-      max_tokens: 300,
-      temperature: 0.7,
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `Answer question similar to how chatgpt  would.
+      //   Me: 'ai'
+      //   Me: ${text}`,
     });
-    if (data) {
-      if (data.choices[0].text) {
-        return res.status(200).json(data.choices[0].text);
-      }
+  
+    const para = result.candidates[0].content.parts[0].text;
+    if (para) {
+      return res.status(200).json(para);
     }
   } catch (err) {
     // console.log(err);
@@ -71,20 +74,20 @@ exports.chatbotController = async (req, res) => {
     });
   }
 };
+
 exports.jsconverterController = async (req, res) => {
   try {
     const { text } = req.body;
-    const { data } = await openai.createCompletion({
-      model: "text-davinci-002",
-      prompt: `/* convert these instruction into javascript code \n${text}`,
-      max_tokens: 400,
-      temperature: 0.25,
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `/* convert these instruction into javascript code \n${text}`,
     });
-    if (data) {
-      if (data.choices[0].text) {
-        return res.status(200).json(data.choices[0].text);
-      }
+  
+    const para = result.candidates[0].content.parts[0].text;
+    if (para) {
+      return res.status(200).json(para);
     }
+    
   } catch (err) {
     // console.log(err);
     return res.status(404).json({
@@ -92,18 +95,20 @@ exports.jsconverterController = async (req, res) => {
     });
   }
 };
+
+
 exports.scifiImageController = async (req, res) => {
   try {
     const { text } = req.body;
-    const { data } = await openai.createImage({
-      prompt: `generate a scifi image of ${text}`,
-      n: 1,
-      size: "512x512",
+    
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `generate a scifi image of ${text}`,
     });
-    if (data) {
-      if (data.data[0].url) {
-        return res.status(200).json(data.data[0].url);
-      }
+  
+    const para = result.candidates[0].content.parts[0].text;
+    if (para) {
+      return res.status(200).json(para);
     }
   } catch (err) {
     // console.log(err);
