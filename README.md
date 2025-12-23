@@ -1,1 +1,1 @@
-live link of this project :- https://ai-platform.onrender.com/login
+live link of this project :- https://ai-project-25.onrender.com
